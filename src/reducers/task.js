@@ -13,11 +13,13 @@ const reducer = (state = initialState, action) => {
         listTask: [],
       };
     case taskConstants.FETCH_TASK_SUCCESS:
+    case taskConstants.FILTER_TASK_SUCCESS:
       return {
         ...state,
         listTask: payload.data,
       };
     case taskConstants.FETCH_TASK_FAILED:
+    case taskConstants.FILTER_TASK_FAILED:
       return {
         ...state,
         listTask: [],

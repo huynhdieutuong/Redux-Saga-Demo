@@ -6,9 +6,10 @@ import { STATUSES } from '../../contants';
 import AddIcon from '@material-ui/icons/Add';
 import TaskList from '../../components/TaskList';
 import TaskForm from '../../components/TaskForm';
+import SearchBox from '../../components/SearchBox';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { fetchListTask } from '../../actions/task';
+import { fetchListTask, filterListTask } from '../../actions/task';
 
 class Taskboard extends Component {
   state = {
@@ -53,7 +54,7 @@ class Taskboard extends Component {
   }
 
   render() {
-    const { classes } = this.props;
+    const { classes, filterListTask } = this.props;
 
     return (
       <div className={classes.taskBoard}>
@@ -65,6 +66,7 @@ class Taskboard extends Component {
         >
           Add task
         </Button>
+        <SearchBox filterListTask={filterListTask} />
         {this.renderBoard()}
       </div>
     );
@@ -75,6 +77,7 @@ Taskboard.propTypes = {
   classes: PropTypes.object,
   task: PropTypes.object,
   fetchListTask: PropTypes.func,
+  filterListTask: PropTypes.func,
 };
 
 const mapStateToProps = (state) => ({
@@ -82,5 +85,5 @@ const mapStateToProps = (state) => ({
 });
 
 export default withStyles(styles)(
-  connect(mapStateToProps, { fetchListTask })(Taskboard)
+  connect(mapStateToProps, { fetchListTask, filterListTask })(Taskboard)
 );

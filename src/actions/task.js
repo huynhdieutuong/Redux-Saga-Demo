@@ -17,3 +17,24 @@ export const fetchListTaskFailed = (error) => ({
     error,
   },
 });
+
+export const filterListTask = (keyword) => ({
+  type: taskConstants.FILTER_TASK,
+  payload: {
+    keyword,
+  },
+});
+
+export const filterListTaskSuccess = (data) => ({
+  type: taskConstants.FILTER_TASK_SUCCESS,
+  payload: {
+    data,
+  },
+});
+
+export const filterListTaskFailed = (error) => ({
+  type: taskConstants.FILTER_TASK_FAILED,
+  payload: {
+    error,
+  },
+});
