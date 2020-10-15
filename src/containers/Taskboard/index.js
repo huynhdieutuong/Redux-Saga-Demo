@@ -7,13 +7,17 @@ import AddIcon from '@material-ui/icons/Add';
 import TaskList from '../../components/TaskList';
 import TaskForm from '../../components/TaskForm';
 import PropTypes from 'prop-types';
-
-const taskList = [];
+import { connect } from 'react-redux';
+import { fetchListTask } from '../../actions/task';
 
 class Taskboard extends Component {
   state = {
     open: false,
   };
+
+  componentDidMount() {
+    this.props.fetchListTask();
+  }
 
   handleClickOpen = () => {
     this.setState({
@@ -28,7 +32,7 @@ class Taskboard extends Component {
   };
 
   renderBoard() {
-    const { classes } = this.props;
+    const { classes, task } = this.props;
 
     return (
       <Grid container spacing={2}>
@@ -36,7 +40,7 @@ class Taskboard extends Component {
           <Grid item md={4} xs={12} key={index}>
             <div className={classes.status}>{status.label}</div>
             <div className={classes.wrapperListTask}>
-              <TaskList tasks={taskList} status={status} key={index} />
+              <TaskList tasks={task.listTask} status={status} key={index} />
             </div>
           </Grid>
         ))}
@@ -69,6 +73,14 @@ class Taskboard extends Component {
 
 Taskboard.propTypes = {
   classes: PropTypes.object,
+  task: PropTypes.object,
+  fetchListTask: PropTypes.func,
 };
 
-export default withStyles(styles)(Taskboard);
+const mapStateToProps = (state) => ({
+  task: state.task,
+});
+
+export default withStyles(styles)(
+  connect(mapStateToProps, { fetchListTask })(Taskboard)
+);
