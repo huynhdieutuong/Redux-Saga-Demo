@@ -2,6 +2,7 @@ import { call, put, takeLatest } from 'redux-saga/effects';
 import { getList } from '../apis/task';
 import { fetchListTaskSuccess, fetchListTaskFailed } from '../actions/task';
 import * as taskConstants from '../contants/task';
+import { toast } from 'react-toastify';
 
 function* watchFetchListTaskAction() {
   try {
@@ -9,6 +10,7 @@ function* watchFetchListTaskAction() {
     yield put(fetchListTaskSuccess(res.data));
   } catch (error) {
     yield put(fetchListTaskFailed(error));
+    toast.error(error.message);
   }
 }
 
