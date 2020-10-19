@@ -1,36 +1,22 @@
 /* eslint-disable no-undef */
-import React, { Component } from 'react';
 import { Button, Grid, withStyles } from '@material-ui/core';
-import styles from './styles';
-import { STATUSES } from '../../contants';
 import AddIcon from '@material-ui/icons/Add';
-import TaskList from '../../components/TaskList';
-import TaskForm from '../../components/TaskForm';
-import SearchBox from '../../components/SearchBox';
 import PropTypes from 'prop-types';
+import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { fetchListTask, filterListTask } from '../../actions/task';
+import { bindActionCreators, compose } from 'redux';
+import * as modalActionCreators from '../../actions/modal';
+import * as taskActionCreators from '../../actions/task';
+import SearchBox from '../../components/SearchBox';
+import TaskForm from '../../components/TaskForm';
+import TaskList from '../../components/TaskList';
+import { STATUSES } from '../../contants';
+import styles from './styles';
 
 class Taskboard extends Component {
-  state = {
-    open: false,
-  };
-
   componentDidMount() {
-    this.props.fetchListTask();
+    this.props.taskActions.fetchListTask();
   }
-
-  handleClickOpen = () => {
-    this.setState({
-      open: true,
-    });
-  };
-
-  handleClose = () => {
-    this.setState({
-      open: false,
-    });
-  };
 
   renderBoard() {
     const { classes, task } = this.props;
@@ -49,12 +35,10 @@ class Taskboard extends Component {
     );
   }
 
-  renderForm() {
-    return <TaskForm open={this.state.open} onCloseForm={this.handleClose} />;
-  }
-
   render() {
-    const { classes, filterListTask } = this.props;
+    const { classes, taskActions, modalActions } = this.props;
+    const { filterListTask } = taskActions;
+    const { showModal } = modalActions;
 
     return (
       <div className={classes.taskBoard}>
@@ -62,7 +46,9 @@ class Taskboard extends Component {
           variant='contained'
           color='primary'
           startIcon={<AddIcon />}
-          onClick={this.handleClickOpen}
+          onClick={() =>
+            showModal({ title: 'Add new task', component: <TaskForm /> })
+          }
         >
           Add task
         </Button>
@@ -76,14 +62,24 @@ class Taskboard extends Component {
 Taskboard.propTypes = {
   classes: PropTypes.object,
   task: PropTypes.object,
-  fetchListTask: PropTypes.func,
-  filterListTask: PropTypes.func,
+  taskActions: PropTypes.shape({
+    fetchListTask: PropTypes.func,
+    filterListTask: PropTypes.func,
+  }),
+  modalActions: PropTypes.shape({
+    showModal: PropTypes.func,
+  }),
 };
 
 const mapStateToProps = (state) => ({
   task: state.task,
 });
 
-export default withStyles(styles)(
-  connect(mapStateToProps, { fetchListTask, filterListTask })(Taskboard)
-);
+const mapDispatchToProps = (dispatch) => ({
+  taskActions: bindActionCreators(taskActionCreators, dispatch),
+  modalActions: bindActionCreators(modalActionCreators, dispatch),
+});
+
+const withConnect = connect(mapStateToProps, mapDispatchToProps);
+
+export default compose(withStyles(styles), withConnect)(Taskboard);
