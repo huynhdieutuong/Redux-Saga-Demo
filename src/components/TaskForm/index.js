@@ -9,6 +9,7 @@ import { bindActionCreators, compose } from 'redux';
 import { reduxForm, Field } from 'redux-form';
 import renderTextField from '../FormHelper/TextField';
 import renderSelectField from '../FormHelper/SelectField';
+import validate from './validate';
 
 class TaskForm extends Component {
   handleSubmitForm = (data) => {
@@ -20,6 +21,8 @@ class TaskForm extends Component {
       classes,
       modalActions: { hideModal },
       handleSubmit,
+      invalid,
+      submitting,
     } = this.props;
 
     return (
@@ -64,7 +67,11 @@ class TaskForm extends Component {
           <Button onClick={hideModal} color='primary'>
             Cancel
           </Button>
-          <Button color='primary' type='submit'>
+          <Button
+            color='primary'
+            type='submit'
+            disabled={invalid || submitting}
+          >
             Add
           </Button>
         </Grid>
@@ -79,6 +86,8 @@ TaskForm.propTypes = {
     hideModal: PropTypes.func,
   }),
   handleSubmit: PropTypes.func,
+  invalid: PropTypes.bool,
+  submitting: PropTypes.bool,
 };
 
 const mapDispatchToProps = (dispatch) => ({
@@ -89,6 +98,7 @@ const withConnect = connect(null, mapDispatchToProps);
 
 const withReduxForm = reduxForm({
   form: 'task',
+  validate,
 });
 
 export default compose(
