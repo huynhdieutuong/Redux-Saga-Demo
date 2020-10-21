@@ -1,10 +1,4 @@
-import {
-  Button,
-  Grid,
-  MenuItem,
-  TextField,
-  withStyles,
-} from '@material-ui/core';
+import { Button, Grid, withStyles } from '@material-ui/core';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { STATUSES } from '../../contants/index';
@@ -13,18 +7,10 @@ import * as modalActionCreators from '../../actions/modal';
 import { connect } from 'react-redux';
 import { bindActionCreators, compose } from 'redux';
 import { reduxForm, Field } from 'redux-form';
+import renderTextField from '../FormHelper/TextField';
+import renderSelectField from '../FormHelper/SelectField';
 
 class TaskForm extends Component {
-  state = {
-    status: 0,
-  };
-
-  handleChangeStatus = (e) => {
-    this.setState({
-      status: e.target.value,
-    });
-  };
-
   handleSubmitForm = (data) => {
     console.log(data);
   };
@@ -35,42 +21,44 @@ class TaskForm extends Component {
       modalActions: { hideModal },
       handleSubmit,
     } = this.props;
-    const { status } = this.state;
 
     return (
       <form onSubmit={handleSubmit(this.handleSubmitForm)}>
-        <Field name='title1' component='input' />
-        <TextField
+        <Field
           autoFocus
           margin='dense'
           id='title'
           label='Title'
-          type='title'
+          type='text'
           fullWidth
           className={classes.textField}
+          name='title'
+          component={renderTextField}
         />
-        <TextField
+        <Field
           id='standard-select-currency'
           select
           label='Status'
-          value={status}
-          onChange={this.handleChangeStatus}
           fullWidth
           className={classes.textField}
+          name='status'
+          component={renderSelectField}
         >
           {STATUSES.map((status) => (
-            <MenuItem key={status.value} value={status.value}>
+            <option key={status.value} value={status.value}>
               {status.label}
-            </MenuItem>
+            </option>
           ))}
-        </TextField>
-        <TextField
+        </Field>
+        <Field
           id='standard-multiline-static'
           label='Description'
           multiline
           rows={4}
           fullWidth
           className={classes.textField}
+          name='description'
+          component={renderTextField}
         />
         <Grid container justify='flex-end'>
           <Button onClick={hideModal} color='primary'>
