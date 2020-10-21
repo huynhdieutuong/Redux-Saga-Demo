@@ -38,3 +38,24 @@ export const filterListTaskFailed = (error) => ({
     error,
   },
 });
+
+export const addTask = (newTask) => ({
+  type: taskConstants.ADD_TASK,
+  payload: {
+    newTask,
+  },
+});
+
+export const addTaskSuccess = (data) => ({
+  type: taskConstants.ADD_TASK_SUCCESS,
+  payload: {
+    data,
+  },
+});
+
+export const addTaskFailed = (error) => ({
+  type: taskConstants.ADD_TASK_FAILED,
+  payload: {
+    error,
+  },
+});

@@ -10,3 +10,7 @@ export const getList = () => {
 export const filterList = (keyword) => {
   return axiosService.get(`${API_ENDPOINT}/${url}?q=${keyword}`);
 };
+
+export const addTask = (data) => {
+  return axiosService.post(`${API_ENDPOINT}/${url}`, data);
+};

@@ -1,9 +1,10 @@
-import { Button, Grid, withStyles } from '@material-ui/core';
+import { Button, CircularProgress, Grid, withStyles } from '@material-ui/core';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { STATUSES } from '../../contants/index';
 import styles from './styles';
 import * as modalActionCreators from '../../actions/modal';
+import * as taskActionCreators from '../../actions/task';
 import { connect } from 'react-redux';
 import { bindActionCreators, compose } from 'redux';
 import { reduxForm, Field } from 'redux-form';
@@ -13,13 +14,15 @@ import validate from './validate';
 
 class TaskForm extends Component {
   handleSubmitForm = (data) => {
-    console.log(data);
+    data.status = parseInt(data.status);
+    this.props.taskActions.addTask(data);
   };
 
   render() {
     const {
       classes,
       modalActions: { hideModal },
+      task: { loadingBtn },
       handleSubmit,
       invalid,
       submitting,
@@ -67,13 +70,18 @@ class TaskForm extends Component {
           <Button onClick={hideModal} color='primary'>
             Cancel
           </Button>
-          <Button
-            color='primary'
-            type='submit'
-            disabled={invalid || submitting}
-          >
-            Add
-          </Button>
+          <div className={classes.wrapper}>
+            <Button
+              color='primary'
+              type='submit'
+              disabled={invalid || submitting || loadingBtn}
+            >
+              Add
+            </Button>
+            {loadingBtn && (
+              <CircularProgress size={24} className={classes.buttonProgress} />
+            )}
+          </div>
         </Grid>
       </form>
     );
@@ -85,6 +93,12 @@ TaskForm.propTypes = {
   modalActions: PropTypes.shape({
     hideModal: PropTypes.func,
   }),
+  taskActions: PropTypes.shape({
+    addTask: PropTypes.func,
+  }),
+  task: PropTypes.shape({
+    loadingBtn: PropTypes.bool,
+  }),
   handleSubmit: PropTypes.func,
   invalid: PropTypes.bool,
   submitting: PropTypes.bool,
@@ -92,9 +106,14 @@ TaskForm.propTypes = {
 
 const mapDispatchToProps = (dispatch) => ({
   modalActions: bindActionCreators(modalActionCreators, dispatch),
+  taskActions: bindActionCreators(taskActionCreators, dispatch),
 });
 
-const withConnect = connect(null, mapDispatchToProps);
+const mapStateToProps = (state) => ({
+  task: state.task,
+});
+
+const withConnect = connect(mapStateToProps, mapDispatchToProps);
 
 const withReduxForm = reduxForm({
   form: 'task',
